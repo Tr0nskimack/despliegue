@@ -2,20 +2,83 @@ const { Pool } = require("pg");
 const indexCtrl = {};
 
 const pool = new Pool({
-  host: "ep-rough-fire-24216729.us-east-2.aws.neon.tech",
-  user: "fl0user",
-  password: "iYuS9zbtD5em",
-  database: "ep-rough-fire-24216729.us-east-2.aws.neon.tech:5432/posts",
+  host: "localhost",
+  user: "postgres",
+  password: "root",
+  database: "empleados",
   port: "5432",
 });
 
 
 
 
-indexCtrl.Users = async (req, res) => {
-  const response = await pool.query("select * from users");
-  res.status(200).json(response.rows);
-  };
+indexCtrl.getUsers = async (req, res) => {
+  try {
+    const response = await pool.query("select * from users");
+    console.log(response.rows)
+    res.status(200).json(response.rows);
+    
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+indexCtrl.createUsers = async (req, res) => {
+  const {name, email} = req.body
+
+  try {
+    
+      const resp = await pool.query(
+        "insert into users (name, email) values ($1, $2)",
+        [name, email]
+      );
+    
+      console.log(resp).rows
+    } catch (error) {
+    console.log(error)
+  }
+  
+  res.send("Usuario creado")
+  
+}
+
+indexCtrl.deleteUsers = async (req, res) => {
+
+  try {
+    const id = (req.params.id)
+    const resp = await pool.query("delete from users where id = $1", [id])
+    
+    res.json(`User delete ${id} succefully`)
+    
+  } catch (error) {
+    console.log(error)
+  }
+  
+}
+
+indexCtrl.userById = async (req, res) => {
+  const id = (req.params.id)
+  try {
+    const resp = await pool.query("select * from users where id = $1", [id])
+    res.json(resp.rows)
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
+
+indexCtrl.updateUsers = async (req, res) => {
+  const id = req.params.id
+  try {
+    const {name, email} = req.body
+    const resp = await pool.query("update users set name = $1, email = $2 where id = $3", [name, email, id])
+    res.json("usuario actualizado satisfactoriamente")
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+}
   
 
 

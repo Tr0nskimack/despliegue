@@ -1,9 +1,13 @@
 const { Router } = require('express')
 const router = Router()
-const { Users } = require('../controllers/index.controllers')
+const { getUsers, createUsers, userById, deleteUsers, updateUsers } = require('../controllers/index.controllers')
 
 
-router.get('/users', Users)
+router.get('/', getUsers)
+router.get('/user/:id', userById)
+router.post('/user/create', createUsers)
+router.put('/user/update/:id', updateUsers)
+router.delete ("/user/:id", deleteUsers)
 
 
 
